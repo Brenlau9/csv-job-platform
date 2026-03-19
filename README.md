@@ -82,6 +82,7 @@ The app loads settings from environment variables and `.env` using `pydantic-set
 - `POST /api/auth/login` returns a bearer token
 - `GET /api/auth/me` returns the authenticated user
 - `POST /api/files` uploads a CSV for the authenticated user
+- `POST /api/jobs` creates a job for an owned uploaded file
 
 ## Authentication flow
 
@@ -117,6 +118,15 @@ curl -X POST http://127.0.0.1:8000/api/files \
 ```
 
 Uploads are stored on disk under `UPLOAD_DIR` and file metadata is persisted in PostgreSQL with the authenticated user's `user_id`.
+
+Create a summarize job for an uploaded file:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/jobs \
+  -H "Authorization: Bearer <access-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"file_id":1,"job_type":"summarize"}'
+```
 
 ## Database models
 
