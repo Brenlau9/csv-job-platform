@@ -81,6 +81,7 @@ The app loads settings from environment variables and `.env` using `pydantic-set
 - `POST /api/auth/register` creates a user account
 - `POST /api/auth/login` returns a bearer token
 - `GET /api/auth/me` returns the authenticated user
+- `POST /api/files` uploads a CSV for the authenticated user
 
 ## Authentication flow
 
@@ -106,6 +107,16 @@ Call a protected endpoint:
 curl http://127.0.0.1:8000/api/auth/me \
   -H "Authorization: Bearer <access-token>"
 ```
+
+Upload a CSV file:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/files \
+  -H "Authorization: Bearer <access-token>" \
+  -F "upload=@sample.csv;type=text/csv"
+```
+
+Uploads are stored on disk under `UPLOAD_DIR` and file metadata is persisted in PostgreSQL with the authenticated user's `user_id`.
 
 ## Database models
 

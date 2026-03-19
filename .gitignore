@@ -16,3 +16,4 @@ venv/
 dist/
 build/
 alembic/.pytest_cache/
+uploads/
