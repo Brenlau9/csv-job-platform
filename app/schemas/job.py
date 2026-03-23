@@ -21,3 +21,24 @@ class JobResponse(BaseModel):
     completed_at: datetime | None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class JobStatusResponse(BaseModel):
+    job_id: int
+    job_type: str
+    status: str
+    created_at: datetime
+    started_at: datetime | None
+    completed_at: datetime | None
+
+
+class SummaryResultPayload(BaseModel):
+    row_count: int
+    column_count: int
+    columns: list[str]
+    null_counts: dict[str, int]
+
+
+class JobResultResponse(BaseModel):
+    job_id: int
+    result: SummaryResultPayload

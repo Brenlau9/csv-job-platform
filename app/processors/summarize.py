@@ -29,6 +29,6 @@ def summarize_csv(file_path: str | Path) -> dict[str, Any]:
     return {
         "row_count": row_count,
         "column_count": len(column_names),
-        "column_names": column_names,
+        "columns": column_names,
         "null_counts": null_counts,
     }
