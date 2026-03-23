@@ -1,5 +1,5 @@
 from celery.exceptions import CeleryError
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from kombu.exceptions import OperationalError
 from sqlalchemy.orm import Session, joinedload
 
@@ -7,7 +7,14 @@ from app.api.deps import get_current_user, get_db
 from app.models.file import File
 from app.models.job import Job
 from app.models.user import User
-from app.schemas.job import JobCreate, JobResponse, JobResultResponse, JobStatusResponse, SummaryResultPayload
+from app.schemas.job import (
+    JobCreate,
+    JobListResponse,
+    JobResponse,
+    JobResultResponse,
+    JobStatusResponse,
+    SummaryResultPayload,
+)
 from app.tasks.job_tasks import process_job
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
@@ -81,6 +88,41 @@ def create_job(
         ) from exc
 
     return job
+
+
+@router.get("", response_model=JobListResponse)
+def list_jobs(
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+) -> JobListResponse:
+    base_query = db.query(Job).filter(Job.user_id == current_user.id)
+    total = base_query.count()
+    jobs = (
+        base_query.order_by(Job.created_at.desc(), Job.id.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+        .all()
+    )
+
+    items = [
+        JobStatusResponse(
+            job_id=job.id,
+            job_type=job.job_type,
+            status=job.status,
+            created_at=job.created_at,
+            started_at=job.started_at,
+            completed_at=job.completed_at,
+        )
+        for job in jobs
+    ]
+    return JobListResponse(
+        items=items,
+        page=page,
+        page_size=page_size,
+        total=total,
+    )
 
 
 @router.get("/{job_id}", response_model=JobStatusResponse)

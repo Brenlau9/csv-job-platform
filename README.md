@@ -86,6 +86,7 @@ The app loads settings from environment variables and `.env` using `pydantic-set
 - `GET /api/auth/me` returns the authenticated user
 - `POST /api/files` uploads a CSV for the authenticated user
 - `POST /api/jobs` creates a job for an owned uploaded file
+- `GET /api/jobs` returns the authenticated user's paginated job history
 - `GET /api/jobs/{job_id}` returns owned job status
 - `GET /api/jobs/{job_id}/result` returns the owned job result
 

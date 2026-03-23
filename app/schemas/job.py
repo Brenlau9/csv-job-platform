@@ -42,3 +42,10 @@ class SummaryResultPayload(BaseModel):
 class JobResultResponse(BaseModel):
     job_id: int
     result: SummaryResultPayload
+
+
+class JobListResponse(BaseModel):
+    items: list[JobStatusResponse]
+    page: int
+    page_size: int
+    total: int

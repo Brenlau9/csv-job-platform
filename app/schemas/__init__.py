@@ -4,6 +4,7 @@ from app.schemas.auth import LoginRequest, TokenResponse, UserCreate, UserRespon
 from app.schemas.file import FileUploadResponse
 from app.schemas.job import (
     JobCreate,
+    JobListResponse,
     JobResponse,
     JobResultResponse,
     JobStatusResponse,
@@ -13,6 +14,7 @@ from app.schemas.job import (
 __all__ = [
     "FileUploadResponse",
     "JobCreate",
+    "JobListResponse",
     "JobResultResponse",
     "JobResponse",
     "JobStatusResponse",
