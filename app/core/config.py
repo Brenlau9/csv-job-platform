@@ -30,6 +30,15 @@ class Settings(BaseSettings):
         default=5_242_880,
         alias="MAX_UPLOAD_SIZE_BYTES",
     )
+    redis_url: str = Field(default="redis://localhost:6380/0", alias="REDIS_URL")
+    celery_broker_url: str = Field(
+        default="redis://localhost:6380/0",
+        alias="CELERY_BROKER_URL",
+    )
+    celery_result_backend: str = Field(
+        default="redis://localhost:6380/1",
+        alias="CELERY_RESULT_BACKEND",
+    )
 
     model_config = SettingsConfigDict(
         env_file=".env",

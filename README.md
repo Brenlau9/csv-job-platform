@@ -53,7 +53,7 @@ uvicorn app.main:app --reload
 Start PostgreSQL locally with Docker Compose:
 
 ```bash
-docker compose up -d postgres
+docker compose up -d postgres redis
 ```
 
 Create the database schema:
@@ -73,6 +73,9 @@ The app loads settings from environment variables and `.env` using `pydantic-set
 - `HOST`: Server bind address
 - `PORT`: Server port
 - `DATABASE_URL`: Database connection string
+- `REDIS_URL`: Redis connection URL
+- `CELERY_BROKER_URL`: Celery broker URL
+- `CELERY_RESULT_BACKEND`: Celery result backend URL
 
 ## Available endpoints
 
@@ -126,6 +129,12 @@ curl -X POST http://127.0.0.1:8000/api/jobs \
   -H "Authorization: Bearer <access-token>" \
   -H "Content-Type: application/json" \
   -d '{"file_id":1,"job_type":"summarize"}'
+```
+
+Run a Celery worker:
+
+```bash
+celery -A app.tasks.celery_app.celery_app worker --loglevel=info
 ```
 
 ## Database models

@@ -1,4 +1,6 @@
+from celery.exceptions import CeleryError
 from fastapi import APIRouter, Depends, HTTPException, status
+from kombu.exceptions import OperationalError
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db
@@ -6,10 +8,11 @@ from app.models.file import File
 from app.models.job import Job
 from app.models.user import User
 from app.schemas.job import JobCreate, JobResponse
+from app.tasks.job_tasks import process_job
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 SUPPORTED_JOB_TYPES = {"summarize"}
-INITIAL_JOB_STATUS = "pending"
+INITIAL_JOB_STATUS = "QUEUED"
 
 
 @router.post("", response_model=JobResponse, status_code=status.HTTP_201_CREATED)
@@ -50,4 +53,16 @@ def create_job(
     db.add(job)
     db.commit()
     db.refresh(job)
+
+    try:
+        process_job.delay(job.id)
+    except (CeleryError, OperationalError, OSError) as exc:
+        job.status = "FAILED"
+        job.error_message = str(exc)
+        db.commit()
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Failed to enqueue job",
+        ) from exc
+
     return job
