@@ -29,28 +29,24 @@ csv-job-platform/
 
 ## Getting started
 
-1. Create and activate a virtual environment.
-2. Install dependencies:
+Run the full stack with one command:
 
 ```bash
-pip install -r requirements.txt
+docker compose up --build
 ```
 
-3. Copy the environment template:
+This starts:
 
-```bash
-cp .env.example .env
-```
+- FastAPI API on `http://localhost:8000`
+- Celery worker
+- PostgreSQL
+- Redis
 
-4. Run the development server:
-
-```bash
-uvicorn app.main:app --reload
-```
+The API and worker use the same application image and share the same uploads volume, so background jobs can read files saved by the API.
 
 ## PostgreSQL and migrations
 
-Start PostgreSQL locally with Docker Compose:
+Start only the backing services for local development:
 
 ```bash
 docker compose up -d postgres redis
@@ -134,11 +130,16 @@ curl -X POST http://127.0.0.1:8000/api/jobs \
   -d '{"file_id":1,"job_type":"summarize"}'
 ```
 
-Run a Celery worker:
+Run a Celery worker locally:
 
 ```bash
 celery -A app.tasks.celery_app.celery_app worker --loglevel=info
 ```
+
+## Docker volumes
+
+- `uploads_data`: shared file storage used by both the API and worker
+- `postgres_data`: PostgreSQL data persistence
 
 ## Database models
 
