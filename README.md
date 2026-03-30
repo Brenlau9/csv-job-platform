@@ -136,6 +136,28 @@ Run a Celery worker locally:
 celery -A app.tasks.celery_app.celery_app worker --loglevel=info
 ```
 
+## Running tests
+
+The integration tests use `pytest`, `httpx`, a dedicated PostgreSQL test database, and mocked Celery enqueueing.
+
+Start PostgreSQL first:
+
+```bash
+docker compose up -d postgres
+```
+
+Run the test suite:
+
+```bash
+pytest tests/test_workflows.py -q
+```
+
+If you are using the project virtualenv directly:
+
+```bash
+.venv/bin/pytest tests/test_workflows.py -q
+```
+
 ## Docker volumes
 
 - `uploads_data`: shared file storage used by both the API and worker
