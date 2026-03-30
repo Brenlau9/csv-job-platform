@@ -40,7 +40,9 @@ async def upload_csv(
 
 
 @pytest.mark.anyio
-async def test_auth_flow_register_login_and_access_protected_route(async_client: AsyncClient) -> None:
+async def test_auth_flow_register_login_and_access_protected_route(
+    async_client: AsyncClient,
+) -> None:
     headers = await register_and_login(async_client, "auth@example.com")
 
     me_response = await async_client.get("/api/auth/me", headers=headers)
@@ -50,7 +52,9 @@ async def test_auth_flow_register_login_and_access_protected_route(async_client:
 
 
 @pytest.mark.anyio
-async def test_file_upload_flow_accepts_csv_and_rejects_invalid_type(async_client: AsyncClient) -> None:
+async def test_file_upload_flow_accepts_csv_and_rejects_invalid_type(
+    async_client: AsyncClient,
+) -> None:
     headers = await register_and_login(async_client, "files@example.com")
 
     upload_response = await async_client.post(
@@ -168,8 +172,14 @@ async def test_list_jobs_returns_only_current_users_jobs_and_paginates(
     )
     other_job_id = other_response.json()["id"]
 
-    page_one_response = await async_client.get("/api/jobs?page=1&page_size=2", headers=owner_headers)
-    page_two_response = await async_client.get("/api/jobs?page=2&page_size=2", headers=owner_headers)
+    page_one_response = await async_client.get(
+        "/api/jobs?page=1&page_size=2",
+        headers=owner_headers,
+    )
+    page_two_response = await async_client.get(
+        "/api/jobs?page=2&page_size=2",
+        headers=owner_headers,
+    )
 
     assert page_one_response.status_code == 200
     assert page_two_response.status_code == 200

@@ -1,11 +1,16 @@
+from __future__ import annotations
+
 from datetime import datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+
+if TYPE_CHECKING:
+    from app.models.job import Job
 
 
 class JobResult(Base):
@@ -24,4 +29,4 @@ class JobResult(Base):
         nullable=False,
     )
 
-    job: Mapped["Job"] = relationship(back_populates="result")
+    job: Mapped[Job] = relationship(back_populates="result")

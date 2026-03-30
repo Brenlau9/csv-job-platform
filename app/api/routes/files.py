@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, File as FastAPIFile, UploadFile, status
+from fastapi import APIRouter, Depends, UploadFile, status
+from fastapi import File as FastAPIFile
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, get_db

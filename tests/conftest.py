@@ -2,7 +2,6 @@ from collections.abc import AsyncIterator, Iterator
 from pathlib import Path
 from threading import Thread
 from time import sleep
-import sys
 
 import pytest
 from httpx import ASGITransport, AsyncClient
@@ -10,10 +9,6 @@ from psycopg import connect
 from sqlalchemy import create_engine
 from sqlalchemy.engine import make_url
 from sqlalchemy.orm import sessionmaker
-
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-if str(PROJECT_ROOT) not in sys.path:
-    sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.api import deps as api_deps
 from app.api.routes import jobs as job_routes

@@ -1,9 +1,17 @@
+from __future__ import annotations
+
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base
+
+if TYPE_CHECKING:
+    from app.models.file import File
+    from app.models.job_result import JobResult
+    from app.models.user import User
 
 
 class Job(Base):
@@ -24,9 +32,9 @@ class Job(Base):
     started_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
-    user: Mapped["User"] = relationship(back_populates="jobs")
-    file: Mapped["File"] = relationship(back_populates="jobs")
-    result: Mapped["JobResult | None"] = relationship(
+    user: Mapped[User] = relationship(back_populates="jobs")
+    file: Mapped[File] = relationship(back_populates="jobs")
+    result: Mapped[JobResult | None] = relationship(
         back_populates="job",
         cascade="all, delete-orphan",
         uselist=False,
